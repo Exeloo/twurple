@@ -1,6 +1,7 @@
 import { type HelixPaginatedResponseWithTotal } from '@twurple/api-call';
-import { extractUserId, type UserIdResolvable } from '@twurple/common';
-import { type HelixEventSubDropEntitlementGrantFilter, type HelixEventSubConduitShardsOptions } from './eventSub.input';
+import { type UserIdResolvable, extractUserId } from '@twurple/common';
+
+import { type HelixEventSubConduitShardsOptions, type HelixEventSubDropEntitlementGrantFilter } from './eventSub.input';
 
 export type HelixEventSubSubscriptionStatus =
 	| 'enabled'
@@ -147,6 +148,13 @@ export function createEventSubModeratorCondition(broadcasterId: string, moderato
 export function createEventSubUserCondition(broadcasterId: string, userId: string) {
 	return {
 		broadcaster_user_id: broadcasterId,
+		user_id: userId,
+	};
+}
+
+/** @internal */
+export function createEventSubUserOnlyCondition(userId: string) {
+	return {
 		user_id: userId,
 	};
 }

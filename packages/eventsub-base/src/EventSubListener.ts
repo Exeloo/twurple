@@ -1,7 +1,12 @@
-import { type HelixEventSubDropEntitlementGrantFilter } from '@twurple/api';
+import type { HelixEventSubDropEntitlementGrantFilter } from '@twurple/api';
 import type { UserIdResolvable } from '@twurple/common';
-import { type EventSubChannelChatNotificationEvent } from './events/chatNotifications/EventSubChannelChatNotificationEvent';
+
+import type { EventSubAutomodMessageHoldEvent } from './events/EventSubAutomodMessageHoldEvent';
+import type { EventSubAutomodMessageUpdateEvent } from './events/EventSubAutomodMessageUpdateEvent';
+import type { EventSubAutomodSettingsUpdateEvent } from './events/EventSubAutomodSettingsUpdateEvent';
+import type { EventSubAutomodTermsUpdateEvent } from './events/EventSubAutomodTermsUpdateEvent';
 import type { EventSubChannelAdBreakBeginEvent } from './events/EventSubChannelAdBreakBeginEvent';
+import type { EventSubChannelAutomaticRedemptionAddEvent } from './events/EventSubChannelAutomaticRedemptionAddEvent';
 import type { EventSubChannelBanEvent } from './events/EventSubChannelBanEvent';
 import type { EventSubChannelCharityCampaignProgressEvent } from './events/EventSubChannelCharityCampaignProgressEvent';
 import type { EventSubChannelCharityCampaignStartEvent } from './events/EventSubChannelCharityCampaignStartEvent';
@@ -10,13 +15,19 @@ import type { EventSubChannelCharityDonationEvent } from './events/EventSubChann
 import type { EventSubChannelChatClearEvent } from './events/EventSubChannelChatClearEvent';
 import type { EventSubChannelChatClearUserMessagesEvent } from './events/EventSubChannelChatClearUserMessagesEvent';
 import type { EventSubChannelChatMessageDeleteEvent } from './events/EventSubChannelChatMessageDeleteEvent';
-import { type EventSubChannelChatMessageEvent } from './events/EventSubChannelChatMessageEvent';
+import type { EventSubChannelChatMessageEvent } from './events/EventSubChannelChatMessageEvent';
 import type { EventSubChannelChatSettingsUpdateEvent } from './events/EventSubChannelChatSettingsUpdateEvent';
+import type { EventSubChannelChatUserMessageHoldEvent } from './events/EventSubChannelChatUserMessageHoldEvent';
+import type { EventSubChannelChatUserMessageUpdateEvent } from './events/EventSubChannelChatUserMessageUpdateEvent';
 import type { EventSubChannelCheerEvent } from './events/EventSubChannelCheerEvent';
 import type { EventSubChannelFollowEvent } from './events/EventSubChannelFollowEvent';
 import type { EventSubChannelGoalBeginEvent } from './events/EventSubChannelGoalBeginEvent';
 import type { EventSubChannelGoalEndEvent } from './events/EventSubChannelGoalEndEvent';
 import type { EventSubChannelGoalProgressEvent } from './events/EventSubChannelGoalProgressEvent';
+import type { EventSubChannelGuestStarGuestUpdateEvent } from './events/EventSubChannelGuestStarGuestUpdateEvent';
+import type { EventSubChannelGuestStarSessionBeginEvent } from './events/EventSubChannelGuestStarSessionBeginEvent';
+import type { EventSubChannelGuestStarSessionEndEvent } from './events/EventSubChannelGuestStarSessionEndEvent';
+import type { EventSubChannelGuestStarSettingsUpdateEvent } from './events/EventSubChannelGuestStarSettingsUpdateEvent';
 import type { EventSubChannelHypeTrainBeginEvent } from './events/EventSubChannelHypeTrainBeginEvent';
 import type { EventSubChannelHypeTrainEndEvent } from './events/EventSubChannelHypeTrainEndEvent';
 import type { EventSubChannelHypeTrainProgressEvent } from './events/EventSubChannelHypeTrainProgressEvent';
@@ -40,17 +51,25 @@ import type { EventSubChannelSubscriptionEndEvent } from './events/EventSubChann
 import type { EventSubChannelSubscriptionEvent } from './events/EventSubChannelSubscriptionEvent';
 import type { EventSubChannelSubscriptionGiftEvent } from './events/EventSubChannelSubscriptionGiftEvent';
 import type { EventSubChannelSubscriptionMessageEvent } from './events/EventSubChannelSubscriptionMessageEvent';
+import type { EventSubChannelSuspiciousUserMessageEvent } from './events/EventSubChannelSuspiciousUserMessageEvent';
+import type { EventSubChannelSuspiciousUserUpdateEvent } from './events/EventSubChannelSuspiciousUserUpdateEvent';
 import type { EventSubChannelUnbanEvent } from './events/EventSubChannelUnbanEvent';
-import { type EventSubChannelUnbanRequestCreateEvent } from './events/EventSubChannelUnbanRequestCreateEvent';
-import { type EventSubChannelUnbanRequestResolveEvent } from './events/EventSubChannelUnbanRequestResolveEvent';
+import type { EventSubChannelUnbanRequestCreateEvent } from './events/EventSubChannelUnbanRequestCreateEvent';
+import type { EventSubChannelUnbanRequestResolveEvent } from './events/EventSubChannelUnbanRequestResolveEvent';
 import type { EventSubChannelUpdateEvent } from './events/EventSubChannelUpdateEvent';
-import { type EventSubDropEntitlementGrantEvent } from './events/EventSubDropEntitlementGrantEvent';
+import type { EventSubChannelVipAddEvent } from './events/EventSubChannelVipAddEvent';
+import type { EventSubChannelVipRemoveEvent } from './events/EventSubChannelVipRemoveEvent';
+import type { EventSubChannelWarningAcknowledgeEvent } from './events/EventSubChannelWarningAcknowledgeEvent';
+import type { EventSubChannelWarningSendEvent } from './events/EventSubChannelWarningSendEvent';
+import type { EventSubDropEntitlementGrantEvent } from './events/EventSubDropEntitlementGrantEvent';
 import type { EventSubExtensionBitsTransactionCreateEvent } from './events/EventSubExtensionBitsTransactionCreateEvent';
 import type { EventSubStreamOfflineEvent } from './events/EventSubStreamOfflineEvent';
 import type { EventSubStreamOnlineEvent } from './events/EventSubStreamOnlineEvent';
 import type { EventSubUserAuthorizationGrantEvent } from './events/EventSubUserAuthorizationGrantEvent';
 import type { EventSubUserAuthorizationRevokeEvent } from './events/EventSubUserAuthorizationRevokeEvent';
 import type { EventSubUserUpdateEvent } from './events/EventSubUserUpdateEvent';
+import type { EventSubUserWhisperMessageEvent } from './events/EventSubUserWhisperMessageEvent';
+import type { EventSubChannelChatNotificationEvent } from './events/chatNotifications/EventSubChannelChatNotificationEvent';
 import type { EventSubSubscription } from './subscriptions/EventSubSubscription';
 
 /**
@@ -733,4 +752,114 @@ export interface EventSubListener {
 	 * @param handler The function that will be called for any new notifications.
 	 */
 	onUserUpdate: (user: UserIdResolvable, handler: (data: EventSubUserUpdateEvent) => void) => EventSubSubscription;
+
+	onAutomodMessageHold: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubAutomodMessageHoldEvent) => void,
+	) => EventSubSubscription;
+
+	onAutomodMessageUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubAutomodMessageUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	onAutomodSettingsUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubAutomodSettingsUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	onAutomodTermsUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubAutomodTermsUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelAutomaticRedemptionAdd: (
+		user: UserIdResolvable,
+		handler: (event: EventSubChannelAutomaticRedemptionAddEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelChatUserMessageHold: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelChatUserMessageHoldEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelChatUserMessageUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelChatUserMessageUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelGuestStarGuestUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelGuestStarGuestUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelGuestStarSessionBegin: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelGuestStarSessionBeginEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelGuestStarSessionEnd: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelGuestStarSessionEndEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelGuestStarSettingsUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelGuestStarSettingsUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	// onChannelModerate: (
+	// 	broadcaster: UserIdResolvable,
+	// 	moderator: UserIdResolvable,
+	// 	handler: (event: EventSubChannelModerateEvent) => void,
+	// ) => EventSubSubscription;
+
+	onChannelSuspiciousUserMessage: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelSuspiciousUserMessageEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelSuspiciousUserUpdate: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelSuspiciousUserUpdateEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelVipAdd: (
+		user: UserIdResolvable,
+		handler: (event: EventSubChannelVipAddEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelVipRemove: (
+		user: UserIdResolvable,
+		handler: (event: EventSubChannelVipRemoveEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelWarningAcknowledge: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelWarningAcknowledgeEvent) => void,
+	) => EventSubSubscription;
+
+	onChannelWarningSend: (
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (event: EventSubChannelWarningSendEvent) => void,
+	) => EventSubSubscription;
+
+	onUserWhisperMessage: (
+		user: UserIdResolvable,
+		handler: (event: EventSubUserWhisperMessageEvent) => void,
+	) => EventSubSubscription;
 }

@@ -1,18 +1,23 @@
-import { createLogger, type Logger, type LoggerOptions } from '@d-fischer/logger';
+import { type Logger, type LoggerOptions, createLogger } from '@d-fischer/logger';
 import { Enumerable } from '@d-fischer/shared-utils';
 import { EventEmitter } from '@d-fischer/typed-event-emitter';
 import {
 	type ApiClient,
-	extractUserId,
 	type HelixEventSubDropEntitlementGrantFilter,
 	type HelixEventSubSubscription,
 	type HelixEventSubSubscriptionStatus,
 	type HelixEventSubTransportOptions,
 	type UserIdResolvable,
+	extractUserId,
 } from '@twurple/api';
 import { rtfm } from '@twurple/common';
-import { type EventSubChannelChatNotificationEvent } from './events/chatNotifications/EventSubChannelChatNotificationEvent';
+
+import type { EventSubAutomodMessageHoldEvent } from './events/EventSubAutomodMessageHoldEvent';
+import type { EventSubAutomodMessageUpdateEvent } from './events/EventSubAutomodMessageUpdateEvent';
+import type { EventSubAutomodSettingsUpdateEvent } from './events/EventSubAutomodSettingsUpdateEvent';
+import type { EventSubAutomodTermsUpdateEvent } from './events/EventSubAutomodTermsUpdateEvent';
 import type { EventSubChannelAdBreakBeginEvent } from './events/EventSubChannelAdBreakBeginEvent';
+import type { EventSubChannelAutomaticRedemptionAddEvent } from './events/EventSubChannelAutomaticRedemptionAddEvent';
 import type { EventSubChannelBanEvent } from './events/EventSubChannelBanEvent';
 import type { EventSubChannelCharityCampaignProgressEvent } from './events/EventSubChannelCharityCampaignProgressEvent';
 import type { EventSubChannelCharityCampaignStartEvent } from './events/EventSubChannelCharityCampaignStartEvent';
@@ -21,13 +26,19 @@ import type { EventSubChannelCharityDonationEvent } from './events/EventSubChann
 import type { EventSubChannelChatClearEvent } from './events/EventSubChannelChatClearEvent';
 import type { EventSubChannelChatClearUserMessagesEvent } from './events/EventSubChannelChatClearUserMessagesEvent';
 import type { EventSubChannelChatMessageDeleteEvent } from './events/EventSubChannelChatMessageDeleteEvent';
-import { type EventSubChannelChatMessageEvent } from './events/EventSubChannelChatMessageEvent';
+import type { EventSubChannelChatMessageEvent } from './events/EventSubChannelChatMessageEvent';
 import type { EventSubChannelChatSettingsUpdateEvent } from './events/EventSubChannelChatSettingsUpdateEvent';
+import type { EventSubChannelChatUserMessageHoldEvent } from './events/EventSubChannelChatUserMessageHoldEvent';
+import type { EventSubChannelChatUserMessageUpdateEvent } from './events/EventSubChannelChatUserMessageUpdateEvent';
 import type { EventSubChannelCheerEvent } from './events/EventSubChannelCheerEvent';
 import type { EventSubChannelFollowEvent } from './events/EventSubChannelFollowEvent';
 import type { EventSubChannelGoalBeginEvent } from './events/EventSubChannelGoalBeginEvent';
 import type { EventSubChannelGoalEndEvent } from './events/EventSubChannelGoalEndEvent';
 import type { EventSubChannelGoalProgressEvent } from './events/EventSubChannelGoalProgressEvent';
+import type { EventSubChannelGuestStarGuestUpdateEvent } from './events/EventSubChannelGuestStarGuestUpdateEvent';
+import type { EventSubChannelGuestStarSessionBeginEvent } from './events/EventSubChannelGuestStarSessionBeginEvent';
+import type { EventSubChannelGuestStarSessionEndEvent } from './events/EventSubChannelGuestStarSessionEndEvent';
+import type { EventSubChannelGuestStarSettingsUpdateEvent } from './events/EventSubChannelGuestStarSettingsUpdateEvent';
 import type { EventSubChannelHypeTrainBeginEvent } from './events/EventSubChannelHypeTrainBeginEvent';
 import type { EventSubChannelHypeTrainEndEvent } from './events/EventSubChannelHypeTrainEndEvent';
 import type { EventSubChannelHypeTrainProgressEvent } from './events/EventSubChannelHypeTrainProgressEvent';
@@ -51,18 +62,31 @@ import type { EventSubChannelSubscriptionEndEvent } from './events/EventSubChann
 import type { EventSubChannelSubscriptionEvent } from './events/EventSubChannelSubscriptionEvent';
 import type { EventSubChannelSubscriptionGiftEvent } from './events/EventSubChannelSubscriptionGiftEvent';
 import type { EventSubChannelSubscriptionMessageEvent } from './events/EventSubChannelSubscriptionMessageEvent';
+import type { EventSubChannelSuspiciousUserMessageEvent } from './events/EventSubChannelSuspiciousUserMessageEvent';
+import type { EventSubChannelSuspiciousUserUpdateEvent } from './events/EventSubChannelSuspiciousUserUpdateEvent';
 import type { EventSubChannelUnbanEvent } from './events/EventSubChannelUnbanEvent';
-import { type EventSubChannelUnbanRequestCreateEvent } from './events/EventSubChannelUnbanRequestCreateEvent';
-import { type EventSubChannelUnbanRequestResolveEvent } from './events/EventSubChannelUnbanRequestResolveEvent';
+import type { EventSubChannelUnbanRequestCreateEvent } from './events/EventSubChannelUnbanRequestCreateEvent';
+import type { EventSubChannelUnbanRequestResolveEvent } from './events/EventSubChannelUnbanRequestResolveEvent';
 import type { EventSubChannelUpdateEvent } from './events/EventSubChannelUpdateEvent';
-import { type EventSubDropEntitlementGrantEvent } from './events/EventSubDropEntitlementGrantEvent';
+import type { EventSubChannelVipAddEvent } from './events/EventSubChannelVipAddEvent';
+import type { EventSubChannelVipRemoveEvent } from './events/EventSubChannelVipRemoveEvent';
+import type { EventSubChannelWarningAcknowledgeEvent } from './events/EventSubChannelWarningAcknowledgeEvent';
+import type { EventSubChannelWarningSendEvent } from './events/EventSubChannelWarningSendEvent';
+import type { EventSubDropEntitlementGrantEvent } from './events/EventSubDropEntitlementGrantEvent';
 import type { EventSubExtensionBitsTransactionCreateEvent } from './events/EventSubExtensionBitsTransactionCreateEvent';
 import type { EventSubStreamOfflineEvent } from './events/EventSubStreamOfflineEvent';
 import type { EventSubStreamOnlineEvent } from './events/EventSubStreamOnlineEvent';
 import type { EventSubUserAuthorizationGrantEvent } from './events/EventSubUserAuthorizationGrantEvent';
 import type { EventSubUserAuthorizationRevokeEvent } from './events/EventSubUserAuthorizationRevokeEvent';
 import type { EventSubUserUpdateEvent } from './events/EventSubUserUpdateEvent';
+import type { EventSubUserWhisperMessageEvent } from './events/EventSubUserWhisperMessageEvent';
+import type { EventSubChannelChatNotificationEvent } from './events/chatNotifications/EventSubChannelChatNotificationEvent';
+import { EventSubAutomodMessageHoldSubscription } from './subscriptions/EventSubAutomodMessageHoldSubscription';
+import { EventSubAutomodMessageUpdateSubscription } from './subscriptions/EventSubAutomodMessageUpdateSubscription';
+import { EventSubAutomodSettingsUpdateSubscription } from './subscriptions/EventSubAutomodSettingsUpdateSubscription';
+import { EventSubAutomodTermsUpdateSubscription } from './subscriptions/EventSubAutomodTermsUpdateSubscription';
 import { EventSubChannelAdBreakBeginSubscription } from './subscriptions/EventSubChannelAdBreakBeginSubscription';
+import { EventSubChannelAutomaticRedemptionAddSubscription } from './subscriptions/EventSubChannelAutomaticRedemptionAddSubscription';
 import { EventSubChannelBanSubscription } from './subscriptions/EventSubChannelBanSubscription';
 import { EventSubChannelCharityCampaignProgressSubscription } from './subscriptions/EventSubChannelCharityCampaignProgressSubscription';
 import { EventSubChannelCharityCampaignStartSubscription } from './subscriptions/EventSubChannelCharityCampaignStartSubscription';
@@ -74,11 +98,17 @@ import { EventSubChannelChatMessageDeleteSubscription } from './subscriptions/Ev
 import { EventSubChannelChatMessageSubscription } from './subscriptions/EventSubChannelChatMessageSubscription';
 import { EventSubChannelChatNotificationSubscription } from './subscriptions/EventSubChannelChatNotificationSubscription';
 import { EventSubChannelChatSettingsUpdateSubscription } from './subscriptions/EventSubChannelChatSettingsUpdateSubscription';
+import { EventSubChannelChatUserMessageHoldSubscription } from './subscriptions/EventSubChannelChatUserMessageHoldSubscription';
+import { EventSubChannelChatUserMessageUpdateSubscription } from './subscriptions/EventSubChannelChatUserMessageUpdateSubscription';
 import { EventSubChannelCheerSubscription } from './subscriptions/EventSubChannelCheerSubscription';
 import { EventSubChannelFollowSubscription } from './subscriptions/EventSubChannelFollowSubscription';
 import { EventSubChannelGoalBeginSubscription } from './subscriptions/EventSubChannelGoalBeginSubscription';
 import { EventSubChannelGoalEndSubscription } from './subscriptions/EventSubChannelGoalEndSubscription';
 import { EventSubChannelGoalProgressSubscription } from './subscriptions/EventSubChannelGoalProgressSubscription';
+import { EventSubChannelGuestStarGuestUpdateSubscription } from './subscriptions/EventSubChannelGuestStarGuestUpdateSubscription';
+import { EventSubChannelGuestStarSessionBeginSubscription } from './subscriptions/EventSubChannelGuestStarSessionBeginSubscription';
+import { EventSubChannelGuestStarSessionEndSubscription } from './subscriptions/EventSubChannelGuestStarSessionEndSubscription';
+import { EventSubChannelGuestStarSettingsUpdateSubscription } from './subscriptions/EventSubChannelGuestStarSettingsUpdateSubscription';
 import { EventSubChannelHypeTrainBeginSubscription } from './subscriptions/EventSubChannelHypeTrainBeginSubscription';
 import { EventSubChannelHypeTrainEndSubscription } from './subscriptions/EventSubChannelHypeTrainEndSubscription';
 import { EventSubChannelHypeTrainProgressSubscription } from './subscriptions/EventSubChannelHypeTrainProgressSubscription';
@@ -105,10 +135,16 @@ import { EventSubChannelSubscriptionEndSubscription } from './subscriptions/Even
 import { EventSubChannelSubscriptionGiftSubscription } from './subscriptions/EventSubChannelSubscriptionGiftSubscription';
 import { EventSubChannelSubscriptionMessageSubscription } from './subscriptions/EventSubChannelSubscriptionMessageSubscription';
 import { EventSubChannelSubscriptionSubscription } from './subscriptions/EventSubChannelSubscriptionSubscription';
+import { EventSubChannelSuspiciousUserMessageSubscription } from './subscriptions/EventSubChannelSuspiciousUserMessageSubscription';
+import { EventSubChannelSuspiciousUserUpdateSubscription } from './subscriptions/EventSubChannelSuspiciousUserUpdateSubscription';
 import { EventSubChannelUnbanRequestCreateSubscription } from './subscriptions/EventSubChannelUnbanRequestCreateSubscription';
 import { EventSubChannelUnbanRequestResolveSubscription } from './subscriptions/EventSubChannelUnbanRequestResolveSubscription';
 import { EventSubChannelUnbanSubscription } from './subscriptions/EventSubChannelUnbanSubscription';
 import { EventSubChannelUpdateSubscription } from './subscriptions/EventSubChannelUpdateSubscription';
+import { EventSubChannelVipAddSubscription } from './subscriptions/EventSubChannelVipAddSubscription';
+import { EventSubChannelVipRemoveSubscription } from './subscriptions/EventSubChannelVipRemoveSubscription';
+import { EventSubChannelWarningAcknowledgeSubscription } from './subscriptions/EventSubChannelWarningAcknowledgeSubscription';
+import { EventSubChannelWarningSendSubscription } from './subscriptions/EventSubChannelWarningSendSubscription';
 import { EventSubDropEntitlementGrantSubscription } from './subscriptions/EventSubDropEntitlementGrantSubscription';
 import { EventSubExtensionBitsTransactionCreateSubscription } from './subscriptions/EventSubExtensionBitsTransactionCreateSubscription';
 import { EventSubStreamOfflineSubscription } from './subscriptions/EventSubStreamOfflineSubscription';
@@ -117,6 +153,7 @@ import type { EventSubSubscription } from './subscriptions/EventSubSubscription'
 import { EventSubUserAuthorizationGrantSubscription } from './subscriptions/EventSubUserAuthorizationGrantSubscription';
 import { EventSubUserAuthorizationRevokeSubscription } from './subscriptions/EventSubUserAuthorizationRevokeSubscription';
 import { EventSubUserUpdateSubscription } from './subscriptions/EventSubUserUpdateSubscription';
+import { EventSubUserWhisperMessageSubscription } from './subscriptions/EventSubUserWhisperMessageSubscription';
 
 const numberRegex = /^\d+$/;
 
@@ -1240,6 +1277,342 @@ export abstract class EventSubBase extends EventEmitter {
 		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToUserUpdateEvents');
 
 		return this._genericSubscribe(EventSubUserUpdateSubscription, handler, this, userId);
+	}
+
+	onAutomodMessageHold(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubAutomodMessageHoldEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(broadcaster, 'subscribeToAutomodMessageHoldEvents');
+		const moderatorId = this._extractUserIdWithNumericWarning(moderator, 'subscribeToAutomodMessageHoldEvents');
+
+		return this._genericSubscribe(
+			EventSubAutomodMessageHoldSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onAutomodMessageUpdate(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubAutomodMessageUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToAutomodMessageUpdateEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(moderator, 'subscribeToAutomodMessageUpdateEvents');
+
+		return this._genericSubscribe(
+			EventSubAutomodMessageUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onAutomodSettingsUpdate(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubAutomodSettingsUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToAutomodSettingsUpdateEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(moderator, 'subscribeToAutomodSettingsUpdateEvents');
+
+		return this._genericSubscribe(
+			EventSubAutomodSettingsUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onAutomodTermsUpdate(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubAutomodTermsUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(broadcaster, 'subscribeToAutomodTermsUpdateEvents');
+		const moderatorId = this._extractUserIdWithNumericWarning(moderator, 'subscribeToAutomodTermsUpdateEvents');
+
+		return this._genericSubscribe(
+			EventSubAutomodTermsUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelAutomaticRedemptionAdd(
+		user: UserIdResolvable,
+		handler: (data: EventSubChannelAutomaticRedemptionAddEvent) => void,
+	): EventSubSubscription {
+		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToChannelAutomaticRedemptionAddEvents');
+
+		return this._genericSubscribe(EventSubChannelAutomaticRedemptionAddSubscription, handler, this, userId);
+	}
+
+	onChannelChatUserMessageHold(
+		broadcaster: UserIdResolvable,
+		user: UserIdResolvable,
+		handler: (data: EventSubChannelChatUserMessageHoldEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelChatUserMessageHoldEvents',
+		);
+		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToChannelChatUserMessageHoldEvents');
+
+		return this._genericSubscribe(
+			EventSubChannelChatUserMessageHoldSubscription,
+			handler,
+			this,
+			broadcasterId,
+			userId,
+		);
+	}
+
+	onChannelChatUserMessageUpdate(
+		broadcaster: UserIdResolvable,
+		user: UserIdResolvable,
+		handler: (data: EventSubChannelChatUserMessageUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelChatUserMessageUpdateEvents',
+		);
+		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToChannelChatUserMessageUpdateEvents');
+
+		return this._genericSubscribe(
+			EventSubChannelChatUserMessageUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			userId,
+		);
+	}
+
+	onChannelGuestStarGuestUpdate(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelGuestStarGuestUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelGuestStarGuestUpdateEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelGuestStarGuestUpdateEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelGuestStarGuestUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelGuestStarSessionBegin(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelGuestStarSessionBeginEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelGuestStarSessionBeginEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelGuestStarSessionBeginEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelGuestStarSessionBeginSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelGuestStarSessionEnd(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelGuestStarSessionEndEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelGuestStarSessionEndEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelGuestStarSessionEndEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelGuestStarSessionEndSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelGuestStarSettingsUpdate(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelGuestStarSettingsUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelGuestStarSettingsUpdateEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelGuestStarSettingsUpdateEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelGuestStarSettingsUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	// onChannelModerate(
+	// 	broadcaster: UserIdResolvable,
+	// 	moderator: UserIdResolvable,
+	// 	handler: (data: EventSubChannelModerateEvent) => void,
+	// ): EventSubSubscription {
+	// 	const broadcasterId = this._extractUserIdWithNumericWarning(broadcaster, 'subscribeToChannelModerateEvents');
+	// 	const moderatorId = this._extractUserIdWithNumericWarning(moderator, 'subscribeToChannelModerateEvents');
+	//
+	// 	return this._genericSubscribe(EventSubChannelModerateSubscription, handler, this, broadcasterId, moderatorId);
+	// }
+
+	onChannelSuspiciousUserMessage(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelSuspiciousUserMessageEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelSuspiciousUserMessageEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelSuspiciousUserMessageEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelSuspiciousUserMessageSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelSuspiciousUserUpdate(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelSuspiciousUserUpdateEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelSuspiciousUserUpdateEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelSuspiciousUserUpdateEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelSuspiciousUserUpdateSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelVipAdd(user: UserIdResolvable, handler: (data: EventSubChannelVipAddEvent) => void): EventSubSubscription {
+		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToChannelVipAddEvents');
+
+		return this._genericSubscribe(EventSubChannelVipAddSubscription, handler, this, userId);
+	}
+
+	onChannelVipRemove(
+		user: UserIdResolvable,
+		handler: (data: EventSubChannelVipRemoveEvent) => void,
+	): EventSubSubscription {
+		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToChannelVipRemoveEvents');
+
+		return this._genericSubscribe(EventSubChannelVipRemoveSubscription, handler, this, userId);
+	}
+
+	onChannelWarningAcknowledge(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelWarningAcknowledgeEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(
+			broadcaster,
+			'subscribeToChannelWarningAcknowledgeEvents',
+		);
+		const moderatorId = this._extractUserIdWithNumericWarning(
+			moderator,
+			'subscribeToChannelWarningAcknowledgeEvents',
+		);
+
+		return this._genericSubscribe(
+			EventSubChannelWarningAcknowledgeSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onChannelWarningSend(
+		broadcaster: UserIdResolvable,
+		moderator: UserIdResolvable,
+		handler: (data: EventSubChannelWarningSendEvent) => void,
+	): EventSubSubscription {
+		const broadcasterId = this._extractUserIdWithNumericWarning(broadcaster, 'subscribeToChannelWarningSendEvents');
+		const moderatorId = this._extractUserIdWithNumericWarning(moderator, 'subscribeToChannelWarningSendEvents');
+
+		return this._genericSubscribe(
+			EventSubChannelWarningSendSubscription,
+			handler,
+			this,
+			broadcasterId,
+			moderatorId,
+		);
+	}
+
+	onUserWhisperMessage(
+		user: UserIdResolvable,
+		handler: (data: EventSubUserWhisperMessageEvent) => void,
+	): EventSubSubscription {
+		const userId = this._extractUserIdWithNumericWarning(user, 'subscribeToUserWhisperMessageEvents');
+
+		return this._genericSubscribe(EventSubUserWhisperMessageSubscription, handler, this, userId);
 	}
 
 	/** @private */

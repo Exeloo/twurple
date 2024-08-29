@@ -191,7 +191,7 @@ export abstract class EventSubHttpBase extends EventSubBase {
 				}
 
 				const verified = this._verifyData(messageId, timestamp, body, algoAndSignature);
-				const data = JSON.parse(body) as EventSubHttpPayload;
+				const data = JSON.parse(body);
 				if (!verified) {
 					this._logger.warn(`Could not verify action ${type} of event: ${id}`);
 					if (type === 'webhook_callback_verification') {

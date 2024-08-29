@@ -10,4 +10,8 @@ module.exports = {
 	arrowParens: 'avoid',
 	proseWrap: 'preserve',
 	endOfLine: 'lf',
+	importOrder: ['^[./]'],
+	importOrderSeparation: true,
+	importOrderSortSpecifiers: true,
+	importOrderParserPlugins: ['typescript', 'decorators-legacy'],
 };

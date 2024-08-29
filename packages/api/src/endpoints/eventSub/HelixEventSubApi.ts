@@ -1,36 +1,37 @@
 import { mapOptional } from '@d-fischer/shared-utils';
-import type { HelixPaginatedResponseWithTotal, HelixPaginatedResponse, HelixResponse } from '@twurple/api-call';
-import { extractUserId, rtfm, type UserIdResolvable } from '@twurple/common';
+import type { HelixPaginatedResponse, HelixPaginatedResponseWithTotal, HelixResponse } from '@twurple/api-call';
+import { type UserIdResolvable, extractUserId, rtfm } from '@twurple/common';
+
 import {
+	type HelixEventSubConduitData,
+	type HelixEventSubConduitShardData,
+	type HelixEventSubSubscriptionData,
+	type HelixEventSubSubscriptionStatus,
+	type HelixPaginatedEventSubSubscriptionsResponse,
 	createEventSubBroadcasterCondition,
+	createEventSubConduitCondition,
+	createEventSubConduitShardsUpdateCondition,
+	createEventSubConduitUpdateCondition,
 	createEventSubDropEntitlementGrantCondition,
 	createEventSubModeratorCondition,
 	createEventSubRewardCondition,
 	createEventSubUserCondition,
-	createEventSubConduitCondition,
-	createEventSubConduitUpdateCondition,
-	createEventSubConduitShardsUpdateCondition,
-	type HelixEventSubSubscriptionData,
-	type HelixEventSubSubscriptionStatus,
-	type HelixPaginatedEventSubSubscriptionsResponse,
-	type HelixEventSubConduitData,
-	type HelixEventSubConduitShardData,
 } from '../../interfaces/endpoints/eventSub.external';
 import {
+	type HelixEventSubConduitShardsOptions,
 	type HelixEventSubDropEntitlementGrantFilter,
 	type HelixEventSubTransportOptions,
 	type HelixPaginatedEventSubSubscriptionsResult,
-	type HelixEventSubConduitShardsOptions,
 } from '../../interfaces/endpoints/eventSub.input';
 import { createSingleKeyQuery } from '../../interfaces/endpoints/generic.external';
 import { HelixPaginatedRequest } from '../../utils/pagination/HelixPaginatedRequest';
-import { createPaginatedResultWithTotal, createPaginatedResult } from '../../utils/pagination/HelixPaginatedResult';
-import { createPaginationQuery, type HelixPagination } from '../../utils/pagination/HelixPagination';
+import { createPaginatedResult, createPaginatedResultWithTotal } from '../../utils/pagination/HelixPaginatedResult';
+import { type HelixPagination, createPaginationQuery } from '../../utils/pagination/HelixPagination';
 import { BaseApi } from '../BaseApi';
-import { HelixEventSubSubscription } from './HelixEventSubSubscription';
-import { HelixPaginatedEventSubSubscriptionsRequest } from './HelixPaginatedEventSubSubscriptionsRequest';
 import { HelixEventSubConduit } from './HelixEventSubConduit';
 import { HelixEventSubConduitShard } from './HelixEventSubConduitShard';
+import { HelixEventSubSubscription } from './HelixEventSubSubscription';
+import { HelixPaginatedEventSubSubscriptionsRequest } from './HelixPaginatedEventSubSubscriptionsRequest';
 
 /**
  * The API methods that deal with EventSub.
@@ -337,7 +338,7 @@ export class HelixEventSubApi extends BaseApi {
 	): Promise<HelixEventSubSubscription> {
 		return await this.createSubscription(
 			'channel.update',
-			'1',
+			'2',
 			createEventSubBroadcasterCondition(broadcaster),
 			transport,
 			broadcaster,
@@ -1496,6 +1497,401 @@ export class HelixEventSubApi extends BaseApi {
 			undefined,
 			false,
 			true,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToAutomodMessageHoldEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'automod.message.hold',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToAutomodMessageUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'automod.message.update',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToAutomodSettingsUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'automod.settings.update',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToAutomodTermsUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'automod.terms.update',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelChatUserMessageHoldEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.chat.user_message_hold',
+			'1',
+			createEventSubUserCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelChatUserMessageUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.chat.user_message_update',
+			'1',
+			createEventSubUserCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	// /**
+	//  * Subscribe to events that represent a drop entitlement being granted.
+	//  *
+	//  * @expandParams
+	//  *
+	//  * @param broadcaster
+	//  * @param transport The transport options.
+	//  */
+	// async subscribeToChannelModerateEvents(
+	// 	broadcaster: UserIdResolvable,
+	// 	transport: HelixEventSubTransportOptions,
+	// ): Promise<HelixEventSubSubscription> {
+	// 	const broadcasterId = extractUserId(broadcaster);
+	// 	return await this.createSubscription(
+	// 		'channel.moderate',
+	// 		'2',
+	// 		createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+	// 		transport,
+	// 	);
+	// }
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelGuestStarSessionBeginEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.guest_star_session.begin',
+			'beta',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelGuestStarSessionEndEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.guest_star_session.end',
+			'beta',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelGuestStarGuestUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.guest_star_guest.update',
+			'beta',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelGuestStarSettingsUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.guest_star_settings.update',
+			'beta',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelAutomaticRedemptionAddEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		return await this.createSubscription(
+			'channel.channel_points_automatic_reward_redemption.add',
+			'1',
+			createEventSubBroadcasterCondition(broadcaster),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelSuspiciousUserMessageEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.suspicious_user.message',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelSuspiciousUserUpdateEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.suspicious_user.update',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelVipAddEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		return await this.createSubscription(
+			'channel.vip.add',
+			'1',
+			createEventSubBroadcasterCondition(broadcaster),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelVipRemoveEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		return await this.createSubscription(
+			'channel.vip.remove',
+			'1',
+			createEventSubBroadcasterCondition(broadcaster),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelWarningAcknowledgeEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.warning.acknowledge',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param broadcaster
+	 * @param transport The transport options.
+	 */
+	async subscribeToChannelWarningSendEvents(
+		broadcaster: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		const broadcasterId = extractUserId(broadcaster);
+		return await this.createSubscription(
+			'channel.warning.send',
+			'1',
+			createEventSubModeratorCondition(broadcasterId, this._getUserContextIdWithDefault(broadcasterId)),
+			transport,
+		);
+	}
+
+	/**
+	 * Subscribe to events that represent a drop entitlement being granted.
+	 *
+	 * @expandParams
+	 *
+	 * @param user
+	 * @param transport The transport options.
+	 */
+	async subscribeToUserWhisperMessageEvents(
+		user: UserIdResolvable,
+		transport: HelixEventSubTransportOptions,
+	): Promise<HelixEventSubSubscription> {
+		return await this.createSubscription(
+			'user.whisper.message',
+			'1',
+			createSingleKeyQuery('user_id', extractUserId(user)),
+			transport,
 		);
 	}
 
