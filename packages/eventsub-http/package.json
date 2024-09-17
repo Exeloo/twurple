@@ -34,16 +34,16 @@
   "funding": "https://github.com/sponsors/d-fischer",
   "license": "MIT",
   "dependencies": {
-    "@d-fischer/logger": "^4.2.1",
+    "@d-fischer/logger": "^4.2.3",
     "@d-fischer/raw-body": "^2.4.3",
-    "@d-fischer/shared-utils": "^3.6.1",
-    "@d-fischer/typed-event-emitter": "^3.3.0",
+    "@d-fischer/shared-utils": "^3.6.3",
+    "@d-fischer/typed-event-emitter": "^3.3.3",
     "@twurple/auth": "7.1.0",
     "@twurple/common": "7.1.0",
     "@twurple/eventsub-base": "7.1.0",
-    "@types/express-serve-static-core": "^4.17.24",
-    "httpanda": "^0.4.6",
-    "tslib": "^2.0.3"
+    "@types/express-serve-static-core": "^4.19.5",
+    "httpanda": "^0.4.7",
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
     "@twurple/api": "7.1.0"

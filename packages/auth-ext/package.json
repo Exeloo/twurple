@@ -30,11 +30,11 @@
   "funding": "https://github.com/sponsors/d-fischer",
   "license": "MIT",
   "dependencies": {
-    "tslib": "^2.0.3"
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
     "@twurple/auth": "7.1.0",
-    "@types/twitch-ext": "^1.24.4"
+    "@types/twitch-ext": "^1.24.9"
   },
   "peerDependencies": {
     "@twurple/auth": "7.1.0",

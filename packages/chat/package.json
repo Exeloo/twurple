@@ -33,19 +33,19 @@
   "funding": "https://github.com/sponsors/d-fischer",
   "license": "MIT",
   "dependencies": {
-    "@d-fischer/cache-decorators": "^4.0.0",
+    "@d-fischer/cache-decorators": "^4.0.1",
     "@d-fischer/deprecate": "^2.0.2",
-    "@d-fischer/logger": "^4.2.1",
-    "@d-fischer/rate-limiter": "^1.0.0",
-    "@d-fischer/shared-utils": "^3.6.1",
-    "@d-fischer/typed-event-emitter": "^3.3.0",
+    "@d-fischer/logger": "^4.2.3",
+    "@d-fischer/rate-limiter": "^1.0.1",
+    "@d-fischer/shared-utils": "^3.6.3",
+    "@d-fischer/typed-event-emitter": "^3.3.3",
     "@twurple/common": "7.1.0",
     "ircv3": "^0.33.0",
-    "tslib": "^2.0.3"
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
     "@twurple/auth": "7.1.0",
-    "@types/jest": "^29.2.3"
+    "@types/jest": "^29.5.13"
   },
   "peerDependencies": {
     "@twurple/auth": "7.1.0"

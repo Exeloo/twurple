@@ -33,9 +33,9 @@
   "funding": "https://github.com/sponsors/d-fischer",
   "license": "MIT",
   "dependencies": {
-    "@d-fischer/shared-utils": "^3.6.1",
-    "@ngrok/ngrok": "^0.5.1",
-    "tslib": "^2.0.3"
+    "@d-fischer/shared-utils": "^3.6.3",
+    "@ngrok/ngrok": "^1.4.1",
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
     "@twurple/api": "7.1.0",

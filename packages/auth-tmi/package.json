@@ -37,12 +37,12 @@
   "license": "MIT",
   "dependencies": {
     "@d-fischer/deprecate": "^2.0.2",
-    "@types/tmi.js": "^1.7.1",
-    "tslib": "^2.0.3"
+    "@types/tmi.js": "^1.8.6",
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
     "@twurple/auth": "7.1.0",
-    "tmi.js": "^1.7.1"
+    "tmi.js": "^1.8.5"
   },
   "peerDependencies": {
     "@twurple/auth": "7.1.0",
